@@ -1,13 +1,13 @@
 # Auto generated configuration file
-# using: 
-# Revision: 1.19 
-# Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v 
+# using:
+# Revision: 1.19
+# Source: /local/reps/CMSSW/CMSSW/Configuration/Applications/python/ConfigBuilder.py,v
 # with command line options: nano102x_on_mini94x_2016_mc -s NANO --mc --eventcontent NANOAODSIM --datatier NANOAODSIM --no_exec --conditions 94X_mcRun2_asymptotic_v3 --era Run2_2016,run2_nanoAOD_94X2016 --customise_commands=process.add_(cms.Service('InitRootHandlers', EnableIMT = cms.untracked.bool(False)))
 import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process('NANO',eras.Run2_2016,eras.run2_nanoAOD_94X2016)
+process = cms.Process('NANO',eras.Run2_2016,eras.run2_miniAOD_80XLegacy)
 
 # import of standard configurations
 process.load('Configuration.StandardSequences.Services_cff')
@@ -27,7 +27,8 @@ process.maxEvents = cms.untracked.PSet(
 
 # Input source
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('/store/mc/RunIISummer16MiniAODv3/QCD_Pt-15to7000_TuneCUETP8M1_Flat_13TeV_pythia8/MINIAODSIM/PUMoriond17_magnetOn_94X_mcRun2_asymptotic_v3-v2/40000/D630DF31-AF20-E911-A423-0CC47A4F1C2E.root'),
+    fileNames = cms.untracked.vstring('/store/mc/RunIISummer16MiniAODv2/TTJets_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/74240163-C6EA-E611-ACD1-0025904C7A58.root'),
+        #/store/mc/RunIISummer16MiniAODv3/QCD_Pt-15to7000_TuneCUETP8M1_Flat_13TeV_pythia8/MINIAODSIM/PUMoriond17_magnetOn_94X_mcRun2_asymptotic_v3-v2/40000/D630DF31-AF20-E911-A423-0CC47A4F1C2E.root'),
     secondaryFileNames = cms.untracked.vstring()
 )
 
