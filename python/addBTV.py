@@ -31,7 +31,7 @@ def update_jets_AK4(process):
 
     process.updatedPatJetsTransientCorrectedWithDeepInfo.tagInfoSources.append(cms.InputTag("pfDeepCSVTagInfosWithDeepInfo"))
     process.updatedPatJetsTransientCorrectedWithDeepInfo.addTagInfos = cms.bool(True)
-    
+
     return process
 
 
@@ -94,12 +94,42 @@ def update_jets_AK8_subjet(process):
                         ['L2Relative', 'L3Absolute'], 'None'),
         btagDiscriminators=list(_btagDiscriminators),
         explicitJTA=True,  # needed for subjet b tagging
-        svClustering=False,  # needed for subjet b tagging (IMPORTANT: Needs to be set to False to disable ghost-association which does not work with slimmed jets)
+        svClustering=True,  # needed for subjet b tagging (IMPORTANT: Needs to be set to False to disable ghost-association which does not work with slimmed jets)
         fatJets=cms.InputTag('slimmedJetsAK8'),  # needed for subjet b tagging
         rParam=0.8,  # needed for subjet b tagging
         postfix='AK8SubjetsWithDeepInfo')
 
-    process.subJetTable.src = 'updatedPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo'  ### VERY LONG NAME!!! :P
+    ########################################################
+    updatedPatJetSDlabel = 'updatedPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo'
+
+
+    from PhysicsTools.PatAlgos.tools.helpers import getPatAlgosToolsTask, addToProcessAndTask
+    from RecoJets.JetProducers.nJettinessAdder_cfi import Njettiness
+    task = getPatAlgosToolsTask(process)
+    addToProcessAndTask('NjettinessAK8Subjets', Njettiness.clone(), process, task)
+    #getattr(process,"NjettinessAK8Subjets").src = cms.InputTag(updatedPatJetSDlabel) #"ak8PFJetsPuppiSoftDrop"+postfix, "SubJets")
+    getattr(process,"NjettinessAK8Subjets").src = cms.InputTag("slimmedJetsAK8PFPuppiSoftDropPacked", "SubJets")
+    process.load('RecoJets.JetProducers.ECF_cff')
+    addToProcessAndTask('nb1AK8PuppiSoftDropSubjets', process.ecfNbeta1.clone(src = cms.InputTag("slimmedJetsAK8PFPuppiSoftDropPacked", "SubJets")), process, task)
+    addToProcessAndTask('nb2AK8PuppiSoftDropSubjets', process.ecfNbeta2.clone(src = cms.InputTag("slimmedJetsAK8PFPuppiSoftDropPacked", "SubJets")), process, task)
+
+    #getattr(process,updatedPatJetSDlabel).userData.userFloats.src += ['nb1AK8PuppiSoftDropSubjets:ecfN2','nb1AK8PuppiSoftDropSubjets:ecfN3']
+    #getattr(process,updatedPatJetSDlabel).userData.userFloats.src += ['nb2AK8PuppiSoftDropSubjets:ecfN2','nb2AK8PuppiSoftDropSubjets:ecfN3']
+    #getattr(process,updatedPatJetSDlabel).userData.userFloats.src += ['NjettinessAK8Subjets:tau1','NjettinessAK8Subjets:tau2','NjettinessAK8Subjets:tau3','NjettinessAK8Subjets:tau4']
+
+
+
+
+
+
+
+
+    ########################################################
+    #process.subJetTable.src = 'updatedPatJetsTransientCorrectedSoftDropSubjetsPFAK8SubjetsWithDeepInfo'  ### VERY LONG NAME!!! :P
+
+
+
+
     return process
 
 
@@ -191,8 +221,8 @@ def get_DeepCSV_vars():
         DeepCSV_trackJetPt = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackJetPt\', -999)", float, doc="track-based jet transverse momentum", precision=10),
         DeepCSV_vertexCategory = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'vertexCategory\', -999)", float, doc="category of secondary vertex (Reco, Pseudo, No)", precision=10),
         DeepCSV_jetNSecondaryVertices = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'jetNSecondaryVertices\', -999)", int, doc="number of reconstructed possible secondary vertices in jet"),
-        DeepCSV_jetNSelectedTracks = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'jetNSelectedTracks\', -999)", int, doc="selected tracks in the jet"), 
-        DeepCSV_jetNTracksEtaRel = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'jetNTracksEtaRel\', -999)", int, doc="number of tracks for which etaRel is computed"), 
+        DeepCSV_jetNSelectedTracks = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'jetNSelectedTracks\', -999)", int, doc="selected tracks in the jet"),
+        DeepCSV_jetNTracksEtaRel = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'jetNTracksEtaRel\', -999)", int, doc="number of tracks for which etaRel is computed"),
         DeepCSV_trackSumJetEtRatio = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSumJetEtRatio\', -999)", float, doc="ratio of track sum transverse energy over jet energy", precision=10),
         DeepCSV_trackSumJetDeltaR = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSumJetDeltaR\', -999)", float, doc="pseudoangular distance between jet axis and track fourvector sum", precision=10),
         DeepCSV_trackSip2dValAboveCharm = Var("tagInfo(\'pfDeepCSV\').taggingVariables.get(\'trackSip2dValAboveCharm\', -999)", float, doc="track 2D signed impact parameter of first track lifting mass above charm", precision=10),
@@ -218,7 +248,7 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
         process = update_jets_AK4(process)
     if addAK8:
         process = update_jets_AK8(process)
-        process = update_jets_AK8_subjet(process)
+        #process = update_jets_AK8_subjet(process)
 
     process.customizeJetTask = cms.Task()
     process.schedule.associate(process.customizeJetTask)
@@ -302,6 +332,10 @@ def add_BTV(process, runOnMC=False, onlyAK4=False, onlyAK8=False):
                         precision=10),
 
     ))
+    #process.customSubJetExtTable.variables.Proba.expr = cms.string("bDiscriminator('pfJetProbabilityBJetTagsSoftDropSubjetsPFAK8SubjetsWithDeepInfo')")
+    #process.customSubJetExtTable.variables.btagDeepB_b.expr = cms.string("bDiscriminator('pfDeepCSVJetTagsSoftDropSubjetsPFAK8SubjetsWithDeepInfo:probb')")
+    #process.customSubJetExtTable.variables.btagDeepB_bb.expr = cms.string("bDiscriminator('pfDeepCSVJetTagsSoftDropSubjetsPFAK8SubjetsWithDeepInfo:probbb')")
+    #process.customSubJetExtTable.variables.btagDeepL.expr = cms.string("bDiscriminator('pfDeepCSVJetTagsSoftDropSubjetsPFAK8SubjetsWithDeepInfo:probudsg')")
 
     process.customSubJetMCExtTable = cms.EDProducer(
     "SimpleCandidateFlatTableProducer",
