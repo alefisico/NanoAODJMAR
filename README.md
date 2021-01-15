@@ -11,8 +11,8 @@ This format can be used with [fastjet](http://fastjet.fr) directly.
 For **UL** 2016, 2017 and 2018 data and MC **NanoAODv6** according to the [XPOG](https://gitlab.cern.ch/cms-nanoAOD/nanoaod-doc/-/wikis/Releases/NanoAODv6) and [PPD](https://twiki.cern.ch/twiki/bin/view/CMS/PdmVLegacy2017Analysis) recommendations:
 
 ```
-cmsrel  CMSSW_10_6_14
-cd  CMSSW_10_6_14/src
+cmsrel  CMSSW_10_6_18
+cd  CMSSW_10_6_18/src
 cmsenv
 git cms-addpkg PhysicsTools/NanoAOD
 git cms-addpkg RecoBTag/Combined
@@ -51,29 +51,25 @@ To create nice websites like [this one](http://algomez.web.cern.ch/algomez/testW
 python PhysicsTools/NanoAOD/test/inspectNanoFile.py NANOAOD.root -s website_with_collectionsize.html -d website_with_collectiondescription.html
 ```
 
-<!--
 ## Submission to CRAB
 
 ```
-python submit_all.py -c nano102x_on_mini94x_2016_mc_NANO.py  -f 2016mc_miniAODv3_DY.txt  -d NANO2016MC
+##python submit_all.py -c nano102x_on_mini94x_2016_mc_NANO.py  -f 2016mc_miniAODv3_DY.txt  -d NANO2016MC
 
-python submit_all.py -c nano102x_on_mini94x_2017_mc_NANO.py -f 2017mc_miniAODv2_DY.txt  -d NANO2017MC
+python submit_all.py -c nano106X_on_mini106X_2017_mc_NANO.py -f 2017mc_miniAODv2_DY.txt  -d NANO2017MC
 
-python submit_all.py -c nano102x_on_mini102x_2018_mc_NANO.py -f 2018mc_DY.txt  -d NANO2018MC
-
-
-python submit_all.py -c nano102x_on_mini94x_2016_data_NANO.py -f 2016data_17Jul2018.txt -d NANO2016 -l Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt
-
-python submit_all.py -c nano102x_on_mini94x_2017_data_NANO.py  -f 2017data_31Mar2018.txt  -d NANO2017 -l Cert_294927-306462_13TeV_EOY2017ReReco_Collisions17_JSON.txt
+python submit_all.py -c nano106X_on_mini106X_2018_mc_NANO.py -f 2018mc_DY.txt  -d NANO2018MC
 
 
+##python submit_all.py -c nano102x_on_mini94x_2016_data_NANO.py -f 2016data_17Jul2018.txt -d NANO2016 -l Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt
 
-python submit_all.py -c nano102x_on_mini102x_2018_data_abc_NANO.py  -f  2018data_17Sep2018.txt  -d NANO2018 -l Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt
+python submit_all.py -c nano106X_on_mini106X_2017_data_NANO.py -f 2017data_31Mar2018.txt  -d NANO2017 -l /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions17/13TeV/Legacy_2017/Cert_294927-306462_13TeV_UL2017_Collisions17_GoldenJSON.txt 
 
-python submit_all.py -c nano102x_on_mini102x_2018_data_d_NANO.py  -f datasets_2018D.txt -d NANO2018 -l Cert_314472-325175_13TeV_PromptReco_Collisions18_JSON.txt
+python submit_all.py -c nano106X_on_mini106X_2018_data_NANO.py -f datasets_2018D.txt -d NANO2018 -l /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/Legacy_2018/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt 
 
 ```
 
+<!--
 ## Documenting the Extended NanoAOD Samples
 
 Please document the input and output datasets on the following twiki: https://twiki.cern.ch/twiki/bin/view/CMS/JetMET/JMARNanoAODv1. For the MC, the number of events can be found by looking up the output dataset in DAS. For the data, you will need to run brilcalc to get the total luminosity of the dataset. See the instructions below. 
